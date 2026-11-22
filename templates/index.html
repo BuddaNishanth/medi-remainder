@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medicine Reminder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .clock {
+            font-size: 2em;
+            margin-top: 20px;
+        }
+        input, button {
+            padding: 8px;
+            margin: 5px;
+            border-radius: 5px;
+            border: none;
+        }
+        table {
+            margin: 20px auto;
+            background: #1e1e1e;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #444;
+        }
+        .delete {
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="animate__animated animate__fadeInDown">Medicine Reminder</h1>
+
+    <div class="clock" id="clock"></div>
+
+    <form method="POST" action="/add">
+        <input type="text" name="name" placeholder="Medicine Name" required>
+        <input type="time" name="time" required>
+        <input type="date" name="start_date" required>
+        <input type="date" name="end_date" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <table>
+        <tr>
+            <th>Medicine</th><th>Time</th><th>Start</th><th>End</th><th>Action</th>
+        </tr>
+        {% for med in medicines %}
+        <tr>
+            <td>{{ med[2] }}</td>
+            <td>{{ med[3] }}</td>
+            <td>{{ med[4] }}</td>
+            <td>{{ med[5] }}</td>
+            <td><a href="/delete/{{ med[0] }}"><button class="delete">Delete</button></a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <audio id="alarmSound" src="{{ url_for('static', filename='alarm.mp3') }}" preload="auto"></audio>
+
+    <script>
+        const clock = document.getElementById("clock");
+        const alarm = document.getElementById("alarmSound");
+
+        function updateClock() {
+            const now = new Date();
+            clock.textContent = now.toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+
+        async function checkReminders() {
+            const now = new Date();
+            const currentTime = now.toTimeString().substring(0, 5);
+            const today = now.toISOString().split('T')[0];
+
+            const res = await fetch('/get_medicines');
+            const meds = await res.json();
+
+            meds.forEach(med => {
+                if (med[1] === currentTime && today >= med[2] && today <= med[3]) {
+                    alarm.play();
+                }
+            });
+        }
+        setInterval(checkReminders, 1000); // check every second
+    </script>
+</body>
+</html>

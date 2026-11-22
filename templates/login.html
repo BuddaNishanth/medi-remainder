@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login / Signup</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        form {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 200px;
+        }
+        button {
+            background-color: #03dac6;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Medicine Reminder Login</h1>
+    <form method="POST">
+        <input type="text" name="username" placeholder="Username" required><br>
+        <input type="password" name="password" placeholder="Password" required><br>
+        <button name="action" value="signin">Sign In</button>
+        <button name="action" value="signup">Sign Up</button>
+    </form>
+</body>
+</html>
